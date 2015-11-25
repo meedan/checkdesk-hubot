@@ -10,14 +10,14 @@
 
 module.exports = (robot) ->
 
+  robot.hear /twitter.com\/(.*)\//i, (res) ->
+    res.send "Recorded tweet ... checking for obvious problems ..."
+    res.send "• YES Found user @" + res.match[1] + " is already in the database"
+    res.send "... Tineye-all-the-things! mode is enabled [configure]"
+    res.send "... Performing Tineye search [$0.06]"
 
   robot.hear /665313496406429698/, (res) ->
     res.send "That photo is from January"
-    res.send "http://blogcenter.readingeagle.com/digital-watch-by-adam-richter/wp-content/uploads/sites/11/2015/11/January-2015.jpg"
-
-  robot.hear /twitter.com(.*)\//i, (res) ->
-    res.send "Recorded tweet ... checking for obvious problems ..."
-    res.send "• Looks like @" + res.match[1] + " is already in the database"
 
   robot.respond /open the (.*) doors/i, (res) ->
     doorType = res.match[1]
@@ -28,11 +28,12 @@ module.exports = (robot) ->
 
   robot.hear /stampit/i, (res) ->
     res.emote "• Stamping it with current verification status: unknown"
-    res.send ""
+    sleep(10)
+    res.send "http://blogcenter.readingeagle.com/digital-watch-by-adam-richter/wp-content/uploads/sites/11/2015/11/January-2015.jpg"
 
   statuses = ['fake', 'true', 'unknown']
 
-  robot.respond /status/i, (res) ->
+  robot.respond /checkstatus/i, (res) ->
     res.send res.random statuses
 
   # robot.topic (res) ->
