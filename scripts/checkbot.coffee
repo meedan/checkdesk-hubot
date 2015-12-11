@@ -29,10 +29,8 @@
 #    Meedan, Chris Blow
 
 cheerio = require('cheerio')
-base64 = require('node-base64-image')
+base64 = require('node-base64-image');
 
-# Example code for reference
-#
 # module.exports = (robot) ->
 #   # Define your regular expressions to match
 #   robot.respond /memebuster (.*)/i, (msg) ->
@@ -40,37 +38,31 @@ base64 = require('node-base64-image')
 #     link = msg.match[1]
 
 module.exports = (robot) ->
-
-  # When you say something like:
-  #   "@checkbot cb [link]"
-  #
-  robot.respond /(cd|checkdesk|memebuster|mb) (.*)/i, (res) ->
-    link = res.match[1]
+  robot.respond /(memebuster|mb|checkdesk) (http.*) (.*)?/i, (msg) ->
+    link = msg.match[2]
+    headline = encodeURIComponent(msg.match[3])
 
     # Get the tweet and scrape the image(s)
     robot.http(link).get() (err, res, body) ->
-
-      # Prepare to scrape with Cheerio
       $ = cheerio.load(body)
 
-      # Warning: This Twitter markup might change
-      imageMarkup = $('.AdaptiveMedia-photoContainer img')
+      # Get the first image
       # TODO: handle more than one image in a tweet
-      # For now, just get the zeroth url:
+      imageMarkup = $('.AdaptiveMedia-photoContainer img')
       imagePath = imageMarkup[0].attribs.src
 
-      # We're going to Base 64 the image
       b64options = {string: true}
-
       # Encode the image so we can send it in the url
-      base64.base64encoder imagePath, b64options, (err, imagePath) ->
+      base64.base64encoder imagePath, b64options, (err, b64Image) ->
         if err
           console.log(err)
           return
 
-        # console.log(imagePath)
-        link = msg.match[1]
+        # Unfortunately this does not work, the URL is too long
+        # I think we need to use a POST and handle the request on the other side.
+        # msg.send "http://localhost:4567?queryImageBackground=#{b64Image}&queryHeadline=Test%20Headline"
+        msg.send "http://localhost:4567?queryHeadline=#{headline}"
 
-  # Handle misunderstandings
   robot.error (err, res) ->
-    robot.logger.error "Sorry, I didn't understand!"
+    robot.logger.error "Sorry, I didn't understand"
+    res.send "I'm confused"
