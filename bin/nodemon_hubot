@@ -1,0 +1,3 @@
+#!/bin/sh
+
+nodemon -w "./scripts/checkbot.coffee" -x node_modules/.bin/hubot --name "rex" "$@" -a lets-chat
