@@ -29,9 +29,10 @@
 #    Meedan, Chris Blow
 
 cheerio = require('cheerio')
-base64 = require('node-base64-image');
+base64 = require('node-base64-image')
 
-# # Indicate that you are defining a script
+# Example code for reference
+#
 # module.exports = (robot) ->
 #   # Define your regular expressions to match
 #   robot.respond /memebuster (.*)/i, (msg) ->
@@ -39,21 +40,37 @@ base64 = require('node-base64-image');
 #     link = msg.match[1]
 
 module.exports = (robot) ->
-  robot.respond /memebuster (.*)/i, (res) ->
+
+  # When you say something like:
+  #   "@checkbot cb [link]"
+  #
+  robot.respond /(cd|checkdesk|memebuster|mb) (.*)/i, (res) ->
     link = res.match[1]
 
     # Get the tweet and scrape the image(s)
     robot.http(link).get() (err, res, body) ->
-      $ = cheerio.load(body)
-      imageMarkup = $('.AdaptiveMedia-photoContainer img')
-      imagePath = imageMarkup[0].attribs.src
-      # TODO: handle more than one image in a tweet
 
+      # Prepare to scrape with Cheerio
+      $ = cheerio.load(body)
+
+      # Warning: This Twitter markup might change
+      imageMarkup = $('.AdaptiveMedia-photoContainer img')
+      # TODO: handle more than one image in a tweet
+      # For now, just get the zeroth url:
+      imagePath = imageMarkup[0].attribs.src
+
+      # We're going to Base 64 the image
       b64options = {string: true}
+
       # Encode the image so we can send it in the url
       base64.base64encoder imagePath, b64options, (err, imagePath) ->
         if err
           console.log(err)
           return
 
-        console.log(imagePath)
+        # console.log(imagePath)
+        link = msg.match[1]
+
+  # Handle misunderstandings
+  robot.error (err, res) ->
+    robot.logger.error "Sorry, I didn't understand!"
