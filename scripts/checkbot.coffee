@@ -54,6 +54,10 @@ fallbackStatement = "Try uploading an image at #{memebusterUrl}"
 cheerio = require('cheerio')
 
 module.exports = (robot) ->
+  robot.respond /(memebuster|mb|checkdesk) start/i, (msg) ->
+    msg.send "Hello again! To get started, open this link:"
+    msg.send "http://memebuster.checkdesk.org"
+    msg.send "^^ upload a picture and set the text, then save the image to share it on social media!"
 
   robot.respond /(memebuster|mb|checkdesk) (http.*)/i, (msg) ->
     link = msg.match[2]
@@ -67,14 +71,14 @@ module.exports = (robot) ->
       msg.send "That looks like a twitter link ..."
       robot.http(link).get() (err, res, body) ->
         $ = cheerio.load(body)
-        msg.send "loaded #{link} ..."
-        # Get the first image
-        msg.send "I'm going to get the image and add it to memebuster ..."
         imagesInTweet = $('.AdaptiveMedia-photoContainer img')
         msg.send "I found #{imagesInTweet.length} image#{if imagesInTweet.length > 1 then 's' else ''}"
         if imagesInTweet
           imageURL = imagesInTweet[0].attribs.src
+          msg.send "Here is the memebuster URL: "
           msg.send "#{memebusterUrl}?image=#{imageURL}"
+          msg.send "^^ use this to create your shareable debunk."
+          msg.send msg.random ["Glad to see people debunking!", "Thanks for your efforts!"]
         else
           msg.send "I didn't find any images"
           msg.send fallbackStatement
