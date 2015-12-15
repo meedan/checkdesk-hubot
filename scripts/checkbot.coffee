@@ -12,9 +12,7 @@
 #     None
 #
 #   Commands:
-#     The syntax is `memebuster [link]` like this:
-#
-#     @botname memebuster http://twitter.com/example/1234
+#     The syntax is `memebuster [link]` like this: @botname memebuster http://twitter.com/example/1234
 #
 #   Notes:
 #     TODO: memebuster [link to .jpg or .gif]
@@ -56,10 +54,6 @@ fallbackStatement = "Try uploading an image at #{memebusterUrl}"
 cheerio = require('cheerio')
 
 module.exports = (robot) ->
-
-  robot.respond /(memebuster|mb|checkdesk help)/, (msg) ->
-    msg.send "For help call 415 309 7900"
-    msg.send fallbackStatement
 
   robot.respond /(memebuster|mb|checkdesk) (http.*)/i, (msg) ->
     link = msg.match[2]
