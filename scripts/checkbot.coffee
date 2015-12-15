@@ -56,7 +56,7 @@ cheerio = require('cheerio')
 module.exports = (robot) ->
   robot.respond /(memebuster|mb|checkdesk) start/i, (msg) ->
     msg.send "Hello again! To get started, open this link:"
-    msg.send "http://memebuster.checkdesk.org"
+    msg.send memebusterUrl
     msg.send "^^ upload a picture and set the text, then save the image to share it on social media!"
 
   robot.respond /(memebuster|mb|checkdesk) (http.*)/i, (msg) ->
