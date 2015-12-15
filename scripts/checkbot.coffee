@@ -9,7 +9,7 @@
 #     • Give basic help when asked
 #
 #   Configuration:
-#     None
+#   HUBOT_CHECKBOT_URL: https://memebuster.checkdesk.org
 #
 #   Commands:
 #     The syntax is `memebuster [link]` like this: @botname memebuster http://twitter.com/example/1234
@@ -48,7 +48,7 @@
 #   Author:
 #    Meedan, Chris Blow
 
-memebusterUrl = "http://memebuster.checkdesk.org"
+memebusterUrl = process.env.HUBOT_CHECKBOT_URL
 fallbackStatement = "Try uploading an image at #{memebusterUrl}"
 
 cheerio = require('cheerio')
@@ -74,7 +74,7 @@ module.exports = (robot) ->
         msg.send "I found #{imagesInTweet.length} image#{if imagesInTweet.length > 1 then 's' else ''}"
         if imagesInTweet
           imageURL = imagesInTweet[0].attribs.src
-          msg.send "http://localhost:4567?image=#{imageURL}"
+          msg.send "#{memebusterUrl}?image=#{imageURL}"
         else
           msg.send "I didn't find any images"
           msg.send fallbackStatement
